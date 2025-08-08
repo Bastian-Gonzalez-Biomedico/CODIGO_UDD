@@ -1,7 +1,6 @@
 import pandas as pd
 import re
 
-# Cargar archivos
 def cargar_archivos():
     try:
         base_a = pd.read_csv("SerieA2024.csv", dtype=str)
@@ -39,36 +38,32 @@ def buscar_en_establecimientos(codigo, hojas):
     return encontrado_antiguo, encontrado_nuevo
 
 def buscar_en_serie_a(codigo, df):
-    # Ajuste aquí: se busca directamente por el nombre exacto "CodigoPrestacion"
     if "CodigoPrestacion" not in df.columns:
         return False
     return any(normalizar_codigo(c) == codigo for c in df["CodigoPrestacion"].dropna())
 
-# Función principal
 def main():
     base_a, hojas_b = cargar_archivos()
 
     while True:
-        codigo_input = input("Ingrese el código (o escriba 'salir' para terminar): ").strip()
+        codigo_input = input("ingrese el código o escriba 'salir' para terminar: ").strip()
         if codigo_input.lower() == 'salir':
             break
 
         codigo = normalizar_codigo(codigo_input)
 
         if not codigo.isdigit() or len(codigo) != 8:
-            print("❌ Código inválido. Debe tener 8 dígitos.")
+            print("código inválido por favor probar con otro.")
             continue
 
-        print(f"\nCódigo ingresado: {codigo}")
+        print(f"\ncódigo ingresado: {codigo}")
 
-        # Buscar en SerieA2024
         existe_serie_a = buscar_en_serie_a(codigo, base_a)
         if existe_serie_a:
             print(f"SerieA2024 → El código de la base de datos SerieA2024 es {codigo}")
         else:
-            print("SerieA2024 → NO ENCONTRADO")
+            print("SerieA2024 → no encontrado")
 
-        # Buscar en Establecimientos DEIS
         existe_antiguo, existe_vigente = buscar_en_establecimientos(codigo, hojas_b)
         if existe_antiguo:
             print(f"DEIS MINSAL (Código Antiguo) → El código en Establecimientos DEIS MINSAL (Código Antiguo) es {codigo}")
@@ -82,7 +77,6 @@ def main():
 
         print("-" * 50)
 
-# Asegura que se ejecute el main
 if __name__ == "__main__":
     main()
 
